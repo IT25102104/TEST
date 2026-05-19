@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${medicine.name} + ' - Online Medical Store'">Medicine Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Header -->
+<header class="bg-primary text-white p-3">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h4"><a th:href="@{/}" class="text-white text-decoration-none">Online Medical Store</a></h1>
+            <div>
+                <a th:href="@{/login}" class="text-white me-3">Login</a>
+                <a th:href="@{/register}" class="text-white">My Account</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/medicines}">Medicines</a></li>
+            <li class="breadcrumb-item active" th:text="${medicine.name}">Medicine Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-5">
+            <img th:src="${medicine.imageUrl != null ? medicine.imageUrl : 'https://via.placeholder.com/400'}"
+                 class="img-fluid" alt="Medicine image">
+        </div>
+        <div class="col-md-7">
+            <h1 th:text="${medicine.name}">Medicine Name</h1>
+            <p class="text-muted" th:text="${medicine.category}">Category</p>
+            <h3 class="text-primary" th:text="'$' + ${medicine.price}">Price</h3>
+
+            <div class="mb-3">
+                <span th:if="${medicine.stockQuantity > 0}" class="badge bg-success">In Stock</span>
+                <span th:if="${medicine.stockQuantity == 0}" class="badge bg-danger">Out of Stock</span>
+                <span th:if="${medicine.requiresPrescription}" class="badge bg-warning">Prescription Required</span>
+            </div>
+
+            <p th:text="${medicine.description}">Description</p>
+
+            <!-- Add to Cart button (with quantity selector) -->
+            <form th:action="@{/cart/add/{id}(id=${medicine.id})}" method="post" class="mb-3">
+                <div class="input-group" style="max-width: 300px;">
+                    <input type="number" name="quantity" value="1" min="1"
+                           class="form-control" th:disabled="${medicine.stockQuantity == 0}">
+                    <button type="submit" class="btn btn-primary btn-lg"
+                            th:disabled="${medicine.stockQuantity == 0}">
+                        Add to Cart
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

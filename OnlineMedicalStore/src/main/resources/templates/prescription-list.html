@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Prescriptions - Online Medical Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="bg-primary text-white p-3">
+    <div class="container">
+        <h1 class="h4"><a th:href="@{/}" class="text-white text-decoration-none">Online Medical Store</a></h1>
+    </div>
+</header>
+
+<div class="container mt-4">
+    <h2>My Prescriptions</h2>
+    <a th:href="@{/prescriptions/upload}" class="btn btn-success mb-3">Upload New Prescription</a>
+
+    <div th:if="${prescriptions == null or prescriptions.empty}" class="alert alert-info">
+        You haven't uploaded any prescriptions yet.
+    </div>
+
+    <table class="table table-striped" th:if="${prescriptions != null and not prescriptions.empty}">
+        <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Upload Date</th>
+            <th>Linked Order</th>
+            <th>Download</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pres : ${prescriptions}">
+            <td th:text="${pres.originalFileName}">prescription.pdf</td>
+            <td th:text="${#temporals.format(pres.uploadDate, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+            <td>
+                <span th:if="${pres.order != null}" th:text="${pres.order.id}">1</span>
+                <span th:if="${pres.order == null}">Not linked</span>
+            </td>
+            <td>
+                <!-- We won't implement actual file download for now, but you could later -->
+                <a th:href="'/uploads/prescriptions/' + ${pres.storedFileName}" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
