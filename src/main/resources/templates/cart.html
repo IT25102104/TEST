@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart - Online Medical Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="bg-primary text-white p-3">
+    <div class="container">
+        <h1 class="h4"><a th:href="@{/}" class="text-white text-decoration-none">Online Medical Store</a></h1>
+    </div>
+</header>
+
+<div class="container mt-4">
+    <h2>Your Shopping Cart</h2>
+
+    <div th:if="${cart == null or cart.cartItems.empty}">
+        <div class="alert alert-info">
+            Your cart is empty. <a th:href="@{/medicines}">Continue shopping</a>
+        </div>
+    </div>
+
+    <div th:if="${cart != null and not cart.cartItems.empty}">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Medicine</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cart.cartItems}">
+                <td th:text="${item.medicine.name}">Name</td>
+                <td th:text="${item.medicine.price}">0.00</td>
+                <td>
+                    <form th:action="@{/cart/add/{id}(id=${medicine.id})}" method="post" class="d-inline">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-sm btn-primary"
+                                th:disabled="${medicine.stockQuantity == 0}">Add to Cart</button>
+                    </form>
+                </td>
+                <td th:text="${item.medicine.price * item.quantity}">0.00</td>
+                <td>
+                    <a th:href="@{/cart/remove/{id}(id=${item.id})}"
+                       class="btn btn-sm btn-danger">Remove</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <h4>Total: $<span th:text="${total}">0.00</span></h4>
+            <a th:href="@{/cart/clear}" class="btn btn-warning">Clear Cart</a>
+            <form th:action="@{/orders/checkout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success">Proceed to Checkout</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
